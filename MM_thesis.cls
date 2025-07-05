@@ -63,9 +63,9 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \RequirePackage{caption}           % 图表标题格式
 \RequirePackage{subcaption}        % 子图表标题
 
-%% 2.7 代码高亮
-\RequirePackage{minted}            % 代码高亮与语法着色
-\RequirePackage{xcolor}            % 颜色定义
+% %% 2.7 代码高亮
+% \RequirePackage{minted}            % 代码高亮与语法着色
+% \RequirePackage{xcolor}            % 颜色定义
 
 %% 2.8 数学环境
 \RequirePackage{amsthm}            % 数学定理环境
@@ -183,32 +183,32 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 %% 第七部分：代码环境配置
 %% =========================================================================
 
-%% 7.1 minted 全局设置
-\setminted{
-    fontsize=\small,
-    linenos=false,
-    frame=single,
-    framesep=2mm,
-    bgcolor=white,
-    breaklines=true,
-    breakanywhere=true,
-    tabsize=4,
-    xleftmargin=0pt,
-    xrightmargin=0pt,
-    numbersep=8pt
-}
+% %% 7.1 minted 全局设置
+% \setminted{
+%     fontsize=\small,
+%     linenos=false,
+%     frame=single,
+%     framesep=2mm,
+%     bgcolor=white,
+%     breaklines=true,
+%     breakanywhere=true,
+%     tabsize=4,
+%     xleftmargin=0pt,
+%     xrightmargin=0pt,
+%     numbersep=8pt
+% }
 
-%% 7.2 自定义代码样式
-\newminted{python}{
-    fontsize=\small,
-    linenos=true,
-    frame=single,
-    framerule=1pt,
-    framesep=10pt,
-    bgcolor=gray!5,
-    breaklines=true,
-    tabsize=4
-}
+% %% 7.2 自定义代码样式
+% \newminted{python}{
+%     fontsize=\small,
+%     linenos=true,
+%     frame=single,
+%     framerule=1pt,
+%     framesep=10pt,
+%     bgcolor=gray!5,
+%     breaklines=true,
+%     tabsize=4
+% }
 
 % \newminted{matlab}{
 %     fontsize=\small,
