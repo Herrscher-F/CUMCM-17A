@@ -56,6 +56,7 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \RequirePackage{tabularray}        % 现代表格解决方案
 \RequirePackage{booktabs}          % 表格线条美化
 \RequirePackage{enumitem}          % 列表环境定制
+\setlist[enumerate]{nosep}
 
 %% 2.6 标题与目录
 \RequirePackage{titlesec}          % 标题格式设置
@@ -137,8 +138,8 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 
 %% 4.5 字号设置
 \renewcommand\normalsize{%
-	\@setfontsize\normalsize{12.05}{14.45}%
-	\abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
+	\@setfontsize\normalsize{12.05}{13.45}%
+	\abovedisplayskip 10\p@ \@plus3\p@ \@minus7\p@
 	\abovedisplayshortskip \z@ \@plus3\p@
 	\belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@}
 
@@ -147,8 +148,33 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 %% =========================================================================
 
 %% 5.1 章节标题格式
-\titleformat{\section}{\centering\Large\bfseries}{\chinese{section}、}{0pt}{}
-\titlespacing{\section}{0pt}{3.5ex plus 1ex minus 0.2ex}{2.3ex plus 0.2ex}
+%% 一级标题格式
+\titleformat{\section}
+  {\centering\heiti\Large\bfseries}
+  {\chinese{section}\quad}
+  {0pt}
+  {}
+  \titlespacing{\section}
+  {0pt}                        % 左边距
+  {3.5ex plus 1ex minus .2ex}  % 上边距 
+  {2.3ex plus .2ex}            % 下边距
+%% 二级标题格式 
+\titleformat{\subsection}
+  {\large\bfseries\heiti}               
+  {\heiti\bfseries\thesubsection}      
+  {1em}                                 
+  {}
+  \titlespacing{\section}
+  {0pt}                       
+  {3.0ex plus 0.8ex minus .2ex}
+  {1.8ex plus .2ex}         
+%% 三级标题格式
+\titleformat{\subsubsection}
+  {\normalsize\song\bfseries}                  
+  {\bfseries\song\thesubsubsection}     
+  {1em}
+  {}
+
 
 %% 5.2 目录格式设置
 \renewcommand{\cftsecdotsep}{4.5}

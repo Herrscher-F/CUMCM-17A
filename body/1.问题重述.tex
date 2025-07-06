@@ -1,6 +1,50 @@
-\section{问题重述}
-数学建模比赛论文是要我们解决一道给定的问题，所以正文部分一般应从问题重述开始，一般确定选题后就可以开始写这一部分了。\par
-这部分的内容是将原问题进行整理，将问题背景和题目分开陈述即可，所以基本没啥难度。\par
-本部分的目的是要吸引读者读下去，所以文字不可冗长，内容选择不要过于分散、琐碎，措辞要精练。\par
-注意：在写这部分的内容时，绝对不可照抄原题！（论文会查重）\par
-应为：在仔细理解了问题的基础上，用自己的语言重新将问题描述一遍。语言需要简明扼要，没有必要像原题一样面面俱到。
+\section{\heiti 问题重述}
+CT技术作为一种先进的无损检测手段，能通过测量物体对X射线的吸收特性来重建物体的内部断层图像，
+典型的二维 CT 系统如图\ref{fig:p1}。
+理想的CT扫描过程依赖于精确的几何参数，然而在实际设备安装与运行中，
+系统参数常因误差而偏离其理论设计值，这些偏差会严重影响成像质量。
+\par
+通常采用“参数标定”来解决此问题，即CT系统先利用结构已知的“模板”进行扫描，
+根据理论投影与实际测量数据的差异，反向求解系统的真实参数。
+后续再将这些被精确标定后的关键参数用于对任意未知物体的图像重建。
+\par
+本研究要求基于上述背景，解决以下核心问题：
+
+\begin{enumerate}[label=(\arabic*), left=0.5em]
+    \item 问题一给定一个由椭圆和圆组成的标定模板，其相关数据已知，
+    包括几何信息（图\ref{fig:p2}）、各位置吸收率（附件1）及其对应的CT扫描数据（附件2）。
+    结合上述信息建立数学模型，
+    确定该CT系统的三个关键未知参数的精确值：旋转中心的坐标、探测器单元的间距以及180个扫描方向的具体角度。
+    \item 问题二和问题三在参数标定的基础上，要求利用附件3和附件4，
+    对两个不同未知物体的CT扫描数据进行图像重建。
+    最终需确定它们的位置、几何形状和内部吸收率分布，并给出指定10个位置点（图\ref{fig:p3}）的精确吸收率值。
+    \item 问题四需要分析问题(1)中所用标定方法的精度与稳定性，并在此基础上自行设计一种新的标定模板，
+    建立相应的标定模型，论证新方案在提高参数标定的精度与稳定性方面优于原方案，并说明理由。
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering 
+
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{图1.png}
+        \caption{CT系统示意图}
+        \label{fig:p1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{图2.png}
+        \caption{模板示意图（单位：mm）}
+        \label{fig:p2}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{图3.png}
+        \caption{10个位置示意图}
+        \label{fig:p3}
+    \end{subfigure}
+
+\end{figure}
+
