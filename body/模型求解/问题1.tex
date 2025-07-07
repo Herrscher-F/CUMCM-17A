@@ -1,53 +1,4 @@
 \subsection{问题一}
-
-\subsubsection{离散 Radon 变换模型}
-
-CT成像的物理过程在数学上可以通过Radon变换进行描述。
-Radon变换是一种将二维空间函数投影至其在线积分集合上的积分变换，
-简单来说，就是一个物体映射在不同角度下的“投影”的集合。\par
-
-在本题中，已知二维断层切片的吸收率分布是一个二维函数 $f(x,y)$ ，
-当一束平行的X射线以角度 $\theta$ 穿过，位于探测器坐标系中 $\rho$ 位置的探测单元所接收到的信号强度$p(\rho,\theta)$，
-即为函数 $f(x,y)$ 沿着直线 $x\cos\theta+y\sin\theta=\rho$ 的线积分，即：
-$$p(\rho,\theta)=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}f(x,y)\delta(x\cos\theta+y\sin\theta-\rho)dxdy$$
-
-其中 $\delta(\cdot)$ 是狄拉克函数，其性质确保了积分仅在指定的射线上进行。
-仅当 $x\cos\theta+y\sin\theta=\rho$ 时，$f(x,y)$ 才对积分有贡献。
-所有投影值 $p(\rho,\theta)$ 构成的二维图像被称为正弦图。\par
-
-在实际的数字成像系统中，探测器单元数量有限，且待重建的吸收率函数 $f(x,y)$ 在离散的像素网格上表示。
-因此，必须对连续的Radon变换模型进行离散化。
-
-本文将积分运算近似为有限求和，并将狄拉克函数替换为其离散形式——单位脉冲序列$\delta[\cdot]$。
-假设图像空间被离散为 $N \times M$ 的像素网格，则在第 $j$ 个角度 $\theta_j$ 下，第 $i$ 个探测器单元 $\rho_i$ 的投影值可以表示为：
-$$p(\rho_i,\theta_j)=\sum_{k=1}^{N}\sum_{l=1}^{M}f(x_k,y_l)\delta[x_k\cos\theta_j+y_l\sin\theta_j-\rho_i]$$
-
-在本问题中，图像网格大小为 $M=N=256$，探测器单元序号$i \in [1,512]$，扫描角度序号$j \in [1,180]$。
-
-探测器单元的物理位置 $\rho_i$ 可定义为：
-
-\begin{equation*}
-\rho_i = i\Delta\rho, \quad i=1,2,\cdots,512 \\
-\end{equation*}
-
-取$\theta_0$ 为旋转前的初始角度，系统参数的离散化关系为：
-
-\begin{equation*}
-\theta_j = \Delta\theta_j + \theta_{j-1}, \quad j=1,2,\cdots,180
-\end{equation*}
-
-题目提到系统绕某固定的旋转中心逆时针旋转 180 次，我们假设每次旋转角度 $\Delta\theta_j = 1^\circ$，
-上式更变为：
-\begin{equation*}
-    \theta_j = j \times 1^\circ + \theta_0, \quad j=1,2,\cdots,180
-\end{equation*}
-
-其中，$\Delta\rho$ 为待求的探测器单元间距，
-$\Delta\theta$ 为角度增量，
-求解的核心任务便是通过标定，
-精确确定参数 $\Delta\rho$、旋转中心 $(x_c, y_c)$ 以及初始角度 $\theta_0$。
-
-
 \subsubsection{探测器间距求解}
 
 探测器单元间距$\Delta\rho$的精确标定是后续图像重建的基础。
@@ -107,18 +58,10 @@ $step6.$ 利用几何信息计算探测器间距。
 
 通过解这个方程组，并结合已知的模板吸收率中心 $(x_m,y_m)$，即可反解出旋转中心 $(x_c,y_c)$。
 
-\subsubsection{{投影角度集求解}
+\subsubsection{投影角度集求解}
 
 在平行束CT中，完整的投影数据需要在 $180°$ 范围内采集，因此可以合理假设角度增量 $\Delta\theta=1.0°$。
 标定的关键在于确定初始角度 $\theta_0$。
 而我们在求解旋转中心时得到的相位 $\phi$ 实际已经包含了初始角度的信息。
 $\phi$ 直接关联了物体质心相对于旋转中心的初始方位角。
 通过几何关系，可以从 $\phi$ 和 $(x_c,y_c)$ 推算出 $\theta_0$。  
-
-
-
-
-
-
-
-
