@@ -1,13 +1,24 @@
 \section{符号说明}
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
-    \begin{tabular}{p{0.2\textwidth}p{0.6\textwidth}p{0.15\textwidth}}
+    \begin{tabular}{c l l}
         \toprule
-        符号 & 说明 & 单位 \\
-        \midrule
-        $x$ & 占位 & 无 \\
+        \textbf{符号} & \textbf{含义说明} & \textbf{单位 / 备注} \\
+        \hline
+        $(x_e, y_e)$ & 椭圆中心坐标 & mm \\
+        $a, b$ & 椭圆长,短半轴 & mm \\
+        $(x_{circ}, y_{circ})$ & 圆的中心坐标 & mm \\
+        $r$ & 圆的半径 & mm \\
+        $(x_m, y_m)$ & 物理质心坐标 & mm \\
+        $(x_{rot}, y_{rot})$ & 旋转中心坐标 & mm \\
+        $\Delta\rho$ & 探测器单元物理间距 & mm \\
+        $\{\theta_j\}_{j=1}^{180}$ & X射线投影角度集合 & $^{\circ}$ \\
+        $p_j(i)$ & 角度 $\theta_j$ 下第 $i$ 个探测器接收投影值 & / \\
+        $L(\theta)$ &  $\theta$ 方向的理论投影宽度 & mm \\
+        $W_j$ & 角度 $\theta_j$ 下投影覆盖探测器单元数 & 像素 \\
+        $C_j$ & 角度 $\theta_j$ 下投影质心位置 & 像素 \\
+        $i_{center}$ & 中心像素索引 & 像素\\
+        $A, \phi, C_{offset}$ & 振幅、相位和垂直偏移量 & 像素, rad, 像素 \\
         \bottomrule
     \end{tabular}
 \end{table}
-本部分是对模型中使用的重要变量进行说明，一般排版时要放到一张表格中。\par
-注意：第一：不需要把所有变量都放到这个表里面，模型中用到的临时变量可以不放。第二：下文中首次出现这些变量时也要进行解释，不然会降低文章的可读性。

@@ -110,7 +110,14 @@ $$L = N \cdot \Delta\rho$$
 \subsubsection{投影宽度的解析模型}
 将模板整体模拟成一个二维平面内的系统，
 由一个中心位于原点、长轴为 $a$、短轴为 $b$ 的椭圆和一个半径为 $r$、圆心位于 $(m, 0)$ 的圆构成。
-当一束与水平方向成夹角 $\theta$ 的平行光照射该模板时，两个图形将在垂直于光线方向的探测器平面上形成阴影。
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=0.8\textwidth]{几何图.png} 
+    \caption{投影几何示意图图} 
+    \label{fig:category}
+\end{figure}
+
+如上图所示，当一束与水平方向成夹角 $\theta$ 的平行光照射该模板时，两个图形将在垂直于光线方向的探测器平面上形成阴影。
 设光线方向的单位向量为 $\mathbf{d} = (\cos\theta, \sin\theta)$，
 则垂直于光线的探测器方向为单位向量 $\mathbf{n} = (-\sin\theta, \cos\theta)$。
 
@@ -133,4 +140,4 @@ L_{\text{total}}(\theta) =\ & \max\left( \sqrt{b^2 \sin^2\theta + a^2 \cos^2\the
 \end{equation}
 
 
-\subsubsection{投影角度的标定模型}
+
