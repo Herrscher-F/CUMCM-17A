@@ -148,32 +148,35 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 %% =========================================================================
 
 %% 5.1 章节标题格式
-%% 一级标题格式
+%% 一级标题格式 
 \titleformat{\section}
   {\centering\heiti\Large\bfseries}
   {\chinese{section}\quad}
   {0pt}
   {}
-  \titlespacing{\section}
-  {0pt}                        % 左边距
-  {3.5ex plus 1ex minus .2ex}  % 上边距 
-  {2.3ex plus .2ex}            % 下边距
+\titlespacing{\section}
+  {0pt}
+  {3.5ex plus 1ex minus .2ex}
+  {2.3ex plus .2ex}
+
 %% 二级标题格式 
 \titleformat{\subsection}
-  {\large\bfseries\heiti}               
-  {\heiti\bfseries\thesubsection}      
-  {1em}                                 
-  {}
-  \titlespacing{\section}
-  {0pt}                       
-  {3.0ex plus 0.8ex minus .2ex}
-  {1.8ex plus .2ex}         
-%% 三级标题格式
-\titleformat{\subsubsection}
-  {\normalsize\song\bfseries}                  
-  {\bfseries\song\thesubsubsection}     
+  {\Large\bfseries\song}  
+  {\thesubsection}                     
   {1em}
   {}
+\titlespacing*{\subsection}            
+  {0pt}
+  {3.0ex plus 0.8ex minus .2ex}        
+  {1.5ex plus .2ex}                     
+
+%% 三级标题格式 
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\heiti}          
+  {\thesubsubsection}                   
+  {1em}
+  {}
+
 
 
 %% 5.2 目录格式设置
