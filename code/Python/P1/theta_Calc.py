@@ -269,7 +269,7 @@ def save_projections_with_angles(matched_angles, projection_data, filename='data
 
 def main():
     
-    projection_data = pd.read_csv('data/附件2.csv', header=None).values
+    projection_data = pd.read_csv('D:/数学建模/2025暑假/CT系统参数标定及成像/问题一/data/附件2.csv', header=None).values
     print(f"投影数据形状: {projection_data.shape}")
     measured_projection_lengths = []
     for angle_idx in tqdm(range(projection_data.shape[1]), desc="处理实际投影"):
