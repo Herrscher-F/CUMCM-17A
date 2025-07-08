@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv('data/附件2.csv', header=None)
+data = pd.read_csv('code/data/附件2.csv', header=None)
 projection_data = data.values
 angles = np.arange(180) 
 projections = []

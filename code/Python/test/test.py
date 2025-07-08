@@ -1,11 +1,8 @@
-import cv2
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # 读取CSV文件
-# 读取CSV文件
-data = pd.read_csv('data/附件1.csv', header=None)
+data = pd.read_csv('code/data/附件1.csv', header=None)
 
 # 将数据转换为numpy数组
 image_data = data.values
@@ -23,8 +20,8 @@ y_coords = height - 1 - y_coords
 # 计算质心坐标
 # 质心公式：x_c = Σ(x*I(x,y)) / Σ(I(x,y)), y_c = Σ(y*I(x,y)) / Σ(I(x,y))
 total_intensity = np.sum(image_data)
-centroid_x = np.sum(x_coords * image_data) / total_intensity
-centroid_y = np.sum(y_coords * image_data) / total_intensity
+centroid_x = np.sum(x_coords * image_data) / total_intensity * 0.3922
+centroid_y = np.sum(y_coords * image_data) / total_intensity * 0.3922
 
 print(f"图像尺寸: {width} x {height}")
 print(f"总强度: {total_intensity}")
