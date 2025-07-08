@@ -133,9 +133,11 @@ def calculate_set_similarity(vec1, vec2):
     return np.linalg.norm(v1_sorted - v2_sorted)
     
 
-def match_projections_optimized(measured_lengths, calculated_lengths, max_candidates=100):
-    """匹配投影长度"""
+def match_projections_with_angle_constraint(measured_lengths, calculated_lengths, preset_angles, max_angle_diff=10, max_candidates=100):
+    """匹配投影长度，添加角度约束条件"""
     matched_angles = []
+    last_matched_angle = None  # 记录上一个匹配的角度
+    
     # 预处理：按投影段数分组
     measured_by_segments = {}
     for i, measured in enumerate(measured_lengths):
@@ -143,35 +145,60 @@ def match_projections_optimized(measured_lengths, calculated_lengths, max_candid
         if num_segments not in measured_by_segments:
             measured_by_segments[num_segments] = []
         measured_by_segments[num_segments].append((i, measured))
+    
     calculated_by_segments = {}
     for i, calculated in enumerate(calculated_lengths):
         num_segments = len(calculated)
         if num_segments not in calculated_by_segments:
             calculated_by_segments[num_segments] = []
         calculated_by_segments[num_segments].append((i, calculated))
-    for _, measured in tqdm(enumerate(measured_lengths), 
-                                      total=len(measured_lengths), 
-                                      desc="匹配投影"):
+    
+    for proj_idx, measured in tqdm(enumerate(measured_lengths), 
+                                   total=len(measured_lengths), 
+                                   desc="匹配投影（含角度约束）"):
         num_segments = len(measured)
         best_match_idx = -1
         best_similarity = float('inf')
+        
         # 只在相同段数的计算投影中搜索
         if num_segments in calculated_by_segments:
             candidates = calculated_by_segments[num_segments]
+            
             # 限制候选数量以加速计算
             if len(candidates) > max_candidates:
-                # 随机选择候选者或使用其他策略
                 step = len(candidates) // max_candidates
                 candidates = candidates[::step]
+            
             for calc_idx, calculated in candidates:
                 # 计算基于取值集合的相似性
                 if len(measured) == len(calculated):
                     similarity = calculate_set_similarity(measured, calculated)
-                    if similarity < best_similarity:
+                    
+                    # 应用角度约束条件
+                    current_angle = preset_angles[calc_idx]
+                    angle_constraint_satisfied = True
+                    
+                    if last_matched_angle is not None:
+                        # 计算角度差，考虑周期性 (0度和360度相邻)
+                        angle_diff = abs(current_angle - last_matched_angle)
+                        angle_diff = min(angle_diff, 360 - angle_diff)  # 处理周期性
+                        
+                        if angle_diff > max_angle_diff:
+                            angle_constraint_satisfied = False
+                    
+                    # 只有满足角度约束且相似性更好时才更新最佳匹配
+                    if angle_constraint_satisfied and similarity < best_similarity:
                         best_similarity = similarity
                         best_match_idx = calc_idx
+        
         matched_angles.append(best_match_idx)
+        
+        # 更新上一个匹配的角度
+        if best_match_idx != -1:
+            last_matched_angle = preset_angles[best_match_idx]
+    
     return matched_angles
+
 
 def save_projection_lengths_to_csv(measured_lengths, calculated_lengths, measured_filename='measured_projection_lengths.csv', calculated_filename='calculated_projection_lengths.csv'):
     # 准备实际测量的投影长度数据
@@ -193,7 +220,7 @@ def save_projection_lengths_to_csv(measured_lengths, calculated_lengths, measure
     calculated_df = pd.DataFrame(calculated_data)
     calculated_df.to_csv(calculated_filename, index=False, header=False)
 
-def visualize_results(matched_angles, preset_angles, save_plot=True):
+def visualize_results(matched_angles,save_plot=True):
 
     # matched_angles 已经是实际角度值，不需要再次转换
     actual_angles = matched_angles
@@ -215,63 +242,27 @@ def visualize_results(matched_angles, preset_angles, save_plot=True):
 
 
 def save_angles_to_csv(matched_angles, filename='angles.csv'):
-    # 过滤掉无效角度（-1），并排序
     valid_angles = [angle for angle in matched_angles if angle != -1]
-    valid_angles.sort()  # 从小到大排序
-    # 确保有180个角度
-    if len(valid_angles) < 180:
-        print(f"警告：只有 {len(valid_angles)} 个有效角度，少于期望的180个")
-        # 用NaN填充不足的部分
-        valid_angles.extend([np.nan] * (180 - len(valid_angles)))
-    elif len(valid_angles) > 180:
-        print(f"警告：有 {len(valid_angles)} 个有效角度，超过期望的180个，将只保留前180个")
-        valid_angles = valid_angles[:180]
-    # 将180个角度重塑为18x10的矩阵
+    valid_angles.sort()
     angles_matrix = np.array(valid_angles).reshape(18, 10)
-    # 保存为CSV文件，指定1位小数格式
     angles_df = pd.DataFrame(angles_matrix)
     angles_df.to_csv(filename, index=False, header=False, float_format='%.1f')
     print(f"角度范围: {np.nanmin(angles_matrix):.1f}° 到 {np.nanmax(angles_matrix):.1f}°")
-    
     return angles_matrix
 
 
 def save_projections_with_angles(matched_angles, projection_data, filename='data/新附件2.csv'):
-    # 过滤掉无效角度（-1），并获取对应的投影数据
+    formatted_angles = []
     valid_data = []
-    valid_angles_list = []
     for i, angle in enumerate(matched_angles):
         if angle != -1:
-            valid_angles_list.append(angle)
+            formatted_angles.append(f"{angle:.1f}")
             valid_data.append(projection_data[:, i])
-    
-    # 按角度排序
-    sorted_indices = np.argsort(valid_angles_list)
-    sorted_angles = [valid_angles_list[i] for i in sorted_indices]
-    sorted_data = [valid_data[i] for i in sorted_indices]
-    # 确保有180个角度和对应的数据
-    if len(sorted_angles) < 180:
-        print(f"警告：只有 {len(sorted_angles)} 个有效角度数据，少于期望的180个")
-        # 填充缺失的数据
-        while len(sorted_angles) < 180:
-            sorted_angles.append(np.nan)
-            sorted_data.append(np.full(projection_data.shape[0], np.nan))
-    elif len(sorted_angles) > 180:
-        print(f"警告：有 {len(sorted_angles)} 个有效角度数据，超过期望的180个，将只保留前180个")
-        sorted_angles = sorted_angles[:180]
-        sorted_data = sorted_data[:180]
-    # 创建数据矩阵：第一行为角度，接下来512行为投影数据
-    # 将角度格式化为1位小数
-    formatted_angles = [f"{angle:.1f}" if not np.isnan(angle) else "NaN" for angle in sorted_angles]
-    # 组合数据：角度作为第一行，投影数据作为后续行
-    combined_data = np.vstack([sorted_angles, np.array(sorted_data).T])
-    # 创建DataFrame并保存
-    df = pd.DataFrame(combined_data)
-    # 设置第一行为列名（角度）
-    df.columns = formatted_angles
-    # 移除第一行数据（因为已经用作列名）
-    df = df.iloc[1:]
-    # 保存为CSV文件
+        else:
+            formatted_angles.append("NaN")
+            valid_data.append(projection_data[:, i])
+    data_matrix = np.column_stack(valid_data)
+    df = pd.DataFrame(data_matrix, columns=formatted_angles)
     df.to_csv(filename, index=False, float_format='%.6f')
     return df
 
@@ -288,7 +279,7 @@ def main():
 
     # 角度\theta的采样
     angle_step = 0.1
-    preset_angles = np.arange(-60, 120, angle_step)
+    preset_angles = np.arange(0, 180, angle_step)
     print(f"预设角度数量: {len(preset_angles)} (步长: {angle_step}度)")
     
     # 为每个角度计算投影长度
@@ -297,9 +288,12 @@ def main():
         lengths = calculate_advanced_geometric_projection(ellipse_params, circle_params, angle)
         calculated_projection_lengths.append(lengths)
     
-    matched_indices = match_projections_optimized(
+    # 使用带角度约束的匹配函数
+    matched_indices = match_projections_with_angle_constraint(
         measured_projection_lengths, 
         calculated_projection_lengths,
+        preset_angles,
+        max_angle_diff=20,  # 最大角度差约束为10度
         max_candidates=100
     )
     
@@ -307,7 +301,7 @@ def main():
     
     save_projection_lengths_to_csv(measured_projection_lengths, calculated_projection_lengths)
     # 可视化结果
-    visualize_results(matched_angles, preset_angles)
+    visualize_results(matched_angles)
     
     # 保存最终确定的180个角度为18x10的CSV文件
     save_angles_to_csv(matched_angles, 'angles.csv')

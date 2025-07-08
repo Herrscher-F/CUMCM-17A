@@ -8,7 +8,7 @@ plt.rcParams["axes.unicode_minus"] = False
 
 def projection_centroid_method():
     """投影质心法分析函数"""
-    data = pd.read_csv('code/data/新附件2.csv', header=None)
+    data = pd.read_csv('data/新附件2.csv', header=None)
     angles = data.iloc[0, :].values  # 第一行是角度信息
     projection_data = data.iloc[1:, :].values  # 第2行到第513行是投影数据
     centroids = []
@@ -89,7 +89,7 @@ def projection_centroid_method():
         return
     
     plt.figure(figsize=(10, 6))
-    plt.plot(unique_angles, averaged_centroids, 'bo-', label='计算的质心', markersize=4)
+    plt.scatter(unique_angles, averaged_centroids, c='blue', s=16, label='计算的质心')
     plt.plot(unique_angles, fitted_values, 'r-', label='拟合的正弦函数', linewidth=2)
     plt.xlabel('旋转角度 (度)')
     plt.ylabel('投影质心')
