@@ -158,10 +158,67 @@ class FBPReconstruction:
             '平均值': self.reconstructed_image.mean(),
             '标准差': self.reconstructed_image.std()
         }
+        
         print("重建图像统计信息:")
         for key, value in stats.items():
             print(f"{key}: {value:.6f}")
             
+    def get_specific_positions_absorption(self):
+        """获取10个特定位置的吸收率值"""
+
+        positions = {
+            '位置1': (10, 18), 
+            '位置2': (34, 25), 
+            '位置3': (43, 33), 
+            '位置4': (45, 75), 
+            '位置5': (48, 55), 
+            '位置6': (50, 75), 
+            '位置7': (56, 76), 
+            '位置8': (65, 37), 
+            '位置9': (79, 18), 
+            '位置10': (98, 43) 
+        }
+        
+
+        scaled_positions = {}
+        absorption_values = {}
+
+        for pos_name, (x, y) in positions.items():
+            # 将位置坐标缩放到图像尺寸
+            scaled_x = int(x * self.image_size / 256)
+            scaled_y = int(y * self.image_size / 256)
+            
+            # 确保坐标在图像范围内
+            scaled_x = max(0, min(scaled_x, self.image_size - 1))
+            scaled_y = max(0, min(scaled_y, self.image_size - 1))
+            
+            scaled_positions[pos_name] = (scaled_x, scaled_y)
+            absorption_values[pos_name] = self.reconstructed_image[scaled_x, scaled_y]
+        
+        # 打印结果
+        print("\n10个特定位置的吸收率值:")
+        for pos_name, (x, y) in scaled_positions.items():
+            absorption = absorption_values[pos_name]
+            print(f"{pos_name}: 坐标({x:3d}, {y:3d}) -> 吸收率: {absorption:.6f}")
+        
+        # 保存结果到CSV文件
+        results_data = []
+        for pos_name, (x, y) in scaled_positions.items():
+            absorption = absorption_values[pos_name]
+            results_data.append([pos_name, x, y, absorption])
+        
+        results_df = pd.DataFrame(results_data, 
+                                columns=['位置名称', 'X坐标', 'Y坐标', '吸收率值'])
+        results_df.to_csv('特定位置吸收率.csv', index=False, encoding='utf-8-sig')
+        print(f"\n结果已保存到 '特定位置吸收率.csv'")
+        
+
+        return {
+            'positions': scaled_positions,
+            'absorption_values': absorption_values
+        }
+
+
     def run_reconstruction(self):
         """执行完整的FBP重建流程"""
         # 步骤1: 构建正弦图
@@ -173,8 +230,9 @@ class FBPReconstruction:
         # 可视化和保存结果
         self.visualize_results()
         self.save_results()
-        print("=" * 50)
-        print("FBP重建完成！")
+        # 获取特定位置的吸收率值
+        specific_results = self.get_specific_positions_absorption()
+        return specific_results
 
 def main():
     """主函数"""
@@ -183,7 +241,10 @@ def main():
     
     # 创建FBP重建对象并执行重建
     fbp = FBPReconstruction(csv_path)
-    fbp.run_reconstruction()
+    specific_results = fbp.run_reconstruction()
+    
+    # 返回特定位置的吸收率值
+    return specific_results
 
 if __name__ == "__main__":
     main()
