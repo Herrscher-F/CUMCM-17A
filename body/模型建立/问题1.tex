@@ -36,16 +36,27 @@ $$p(\rho_i,\theta_j)=\sum_{k=1}^{N}\sum_{l=1}^{M}f(x_k,y_l)\delta[x_k\cos\theta_
 \theta_j = \Delta\theta_j + \theta_{j-1}, \quad j=1,2,\cdots,180
 \end{equation*}
 
-题目提到系统绕某固定的旋转中心逆时针旋转 180 次，我们假设每次旋转角度 $\Delta\theta_j = 1^\circ$，
-上式更变为：
-\begin{equation*}
-    \theta_j = j \times 1^\circ + \theta_0, \quad j=1,2,\cdots,180
-\end{equation*}
+将此整体模拟成一个二维平面内的模板系统，由一个中心位于原点、长轴为 $a$、短轴为 $b$ 的椭圆和一个半径为 $r$、圆心位于 $(m, 0)$ 的圆构成。当一束与水平方向成夹角 $\theta$ 的平行光照射该模板时，两个图形将在垂直于光线方向的探测器平面上形成阴影。设光线方向的单位向量为 $\mathbf{d} = (\cos\theta, \sin\theta)$，则垂直于光线的探测器方向为单位向量 $\mathbf{n} = (-\sin\theta, \cos\theta)$。
 
-其中，$\Delta\rho$ 为待求的探测器单元间距，
-$\Delta\theta$ 为角度增量，
-求解的核心任务便是通过标定，
-精确确定参数 $\Delta\rho$、旋转中心 $(x_c, y_c)$ 以及初始角度 $\theta_0$。
+椭圆在探测器方向上的投影为对称区间，其半宽度为：
+\[
+w_e(\theta) = \sqrt{b^2 \sin^2\theta + a^2 \cos^2\theta}
+\]
+
+圆心在投影方向上的坐标为：
+\[
+p_c = -m \sin\theta
+\]
+
+其对应的投影区间为 $[p_c - r,\ p_c + r] = [-m \sin\theta - r,\ -m \sin\theta + r]$。将椭圆和圆在探测器方向上的投影视为两个区间，则它们的总阴影长度为这两个区间的并集长度。可以统一表示为如下解析表达式：
+\begin{equation}
+\begin{split}
+L_{\text{total}}(\theta) =\ & \max\left( \sqrt{b^2 \sin^2\theta + a^2 \cos^2\theta},\ -m \sin\theta + r \right) \\
+& - \min\left( -\sqrt{b^2 \sin^2\theta + a^2 \cos^2\theta},\ -m \sin\theta - r \right)
+\end{split}
+\end{equation}
+
+
 
 
 
